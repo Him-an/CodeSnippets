@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>Singleton_Snippet</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>All</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>// 使用方法：.h 添加
+// MYSingletonH(SingletonClass)//单例模式
+// 使用方法：.m 添加
+// MYSingletonM(SingletonClass)//单例模式
+
+
+// MYSingletonH.h文件 - 创建MYSingletonH.h全局文件
+#define MYSingletonH(name) + (instancetype)shared##name;
+
+#if __has_feature(objc_arc)
+
+    #define MYSingletonM(name) \
+    static id _instace; \
+ \
+    + (id)allocWithZone:(struct _NSZone *)zone \
+    { \
+        if (_instace == nil) {\
+            _instace = [super allocWithZone:zone]; \
+            NSLog(@"单例创建！--- 上架删除该行"); \
+        } \
+        return _instace; \
+    } \
+ \
+    + (instancetype)shared##name \
+    { \
+        if (_instace == nil) {\
+            _instace = [[self alloc]init]; \
+        } \
+      return _instace; \
+  \
+    } \
+ \
+    - (id)copyWithZone:(NSZone *)zone \
+    { \
+        return _instace; \
+    }
+
+#else
+
+    #define MYSingletonM(name) \
+    static id _instace; \
+ \
+    + (id)allocWithZone:(struct _NSZone *)zone \
+    { \
+        static dispatch_once_t onceToken; \
+        dispatch_once(&amp;onceToken, ^{ \
+            _instace = [super allocWithZone:zone]; \
+        }); \
+        return _instace; \
+    } \
+ \
+    + (instancetype)shared##name \
+    { \
+        static dispatch_once_t onceToken; \
+        dispatch_once(&amp;onceToken, ^{ \
+            _instace = [[self alloc] init]; \
+        }); \
+        return _instace; \
+    } \
+ \
+    - (id)copyWithZone:(NSZone *)zone \
+    { \
+        return _instace; \
+    } \
+ \
+    - (oneway void)release { } \
+    - (id)retain { return self; } \
+    - (NSUInteger)retainCount { return 1;} \
+    - (id)autorelease { return self;}
+
+#endif</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>5400B914-810C-4BB1-9EEB-76FFE07815B4</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Objective-C-Plus-Plus</string>
+	<key>IDECodeSnippetSummary</key>
+	<string></string>
+	<key>IDECodeSnippetTitle</key>
+	<string>My Singleton Snippet</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>2</integer>
+</dict>
+</plist>
