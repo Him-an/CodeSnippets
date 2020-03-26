@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>DIYView_Snippet</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>All</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>import Foundation
+
+class MenuBGView: UIView {
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        initBGView()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    convenience init() {
+        self.init(frame: CGRect.zero)
+        initBGView()
+    }
+
+    func initBGView() {
+        backgroundColor = UIColor.init(hex: 0x3D3D3D, alpha: 0.85)
+        //        let blurEffect: UIBlurEffect = UIBlurEffect.init(style: .dark)
+        //        let blurView: UIVisualEffectView = UIVisualEffectView.init(effect: blurEffect)
+        //        addSubview(blurView)
+        //        blurView.snp.makeConstraints({ (maker) in
+        //            maker.edges.equalToSuperview()
+        //        })
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        roundCorners(corners: [.topLeft, .topRight], radius: 5.0)
+    }
+
+    deinit {
+        printLog("\(self.classIdentifier) deinit")
+    }
+
+}
+
+
+
+extension UIView {
+    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        layer.mask = mask
+    }
+}</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>F9DBD96A-0098-4B5D-BB23-41366BF7CE8E</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Swift</string>
+	<key>IDECodeSnippetSummary</key>
+	<string></string>
+	<key>IDECodeSnippetTitle</key>
+	<string>DIYView Snippet</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>0</integer>
+</dict>
+</plist>

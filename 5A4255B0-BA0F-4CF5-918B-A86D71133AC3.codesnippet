@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>printLog_Snippet</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>All</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>/// 单参数打印函数
+///
+/// - Parameters:
+///   - message:打印
+///   - file: 文件名，默认值：#file
+///   - line: 第几行，默认值：#line
+///   - method: 函数名，默认值：#function
+func printLog(_ message: Any,
+              file: String = #file,
+              line: Int = #line,
+              method: String = #function)
+{
+    #if DEBUG
+    print("[函数名: \((file as NSString).lastPathComponent)] [行号: \(line)],方法：\(method) \n---&gt;&gt;  \(message)")
+    #endif
+}
+
+/// 可变参打印函数
+///
+/// - Parameters:
+///   - items: Zero or more items to print.
+///   - separator: A string to print between each item. The default is a single space (`" "`).
+///   - terminator: The string to print after all items have been printed. The  default is a newline (`"\n"`).
+///   - file: 文件名，默认值：#file
+///   - line: 第几行，默认值：#line
+///   - method: 函数名，默认值：#function
+func printLog(_ items: Any...,
+    separator: String = " ",
+    terminator: String = "\n",
+    file: String = #file,
+    line: Int = #line,
+    method: String = #function)
+{
+    #if DEBUG
+    print("[函数名: \((file as NSString).lastPathComponent)] [行号: \(line)],方法：\(method) \n---&gt;&gt;  ", terminator: separator)
+    var i = 0
+    let j = items.count
+    for a in items {
+        i += 1
+        print(a, terminator:i == j ? terminator: separator)
+    }
+    #endif
+}</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>5A4255B0-BA0F-4CF5-918B-A86D71133AC3</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Swift</string>
+	<key>IDECodeSnippetSummary</key>
+	<string></string>
+	<key>IDECodeSnippetTitle</key>
+	<string>printLog Snippet</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>0</integer>
+</dict>
+</plist>

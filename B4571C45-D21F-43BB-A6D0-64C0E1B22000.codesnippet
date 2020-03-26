@@ -3,24 +3,38 @@
 <plist version="1.0">
 <dict>
 	<key>IDECodeSnippetCompletionPrefix</key>
-	<string></string>
+	<string>extension_NSObject_swift</string>
 	<key>IDECodeSnippetCompletionScopes</key>
 	<array>
 		<string>All</string>
 	</array>
 	<key>IDECodeSnippetContents</key>
-	<string>[NSString stringWithFormat: @"%ld",indexPath.row];</string>
+	<string>import Foundation
+
+extension NSObject {
+    static var identifier: String {
+        get {
+            return String(describing: self)
+        }
+    }
+    
+    var classIdentifier: String {
+        get {
+            return String(describing: type(of: self))
+        }
+    }
+}</string>
 	<key>IDECodeSnippetIdentifier</key>
-	<string>E298B28C-CF72-469A-A842-8E3286B31220</string>
+	<string>B4571C45-D21F-43BB-A6D0-64C0E1B22000</string>
 	<key>IDECodeSnippetLanguage</key>
-	<string>Xcode.SourceCodeLanguage.Objective-C</string>
+	<string>Xcode.SourceCodeLanguage.Swift</string>
 	<key>IDECodeSnippetSummary</key>
 	<string></string>
 	<key>IDECodeSnippetTitle</key>
-	<string>My Code Snippet</string>
+	<string>extension NSObject - swift</string>
 	<key>IDECodeSnippetUserSnippet</key>
 	<true/>
 	<key>IDECodeSnippetVersion</key>
-	<integer>2</integer>
+	<integer>0</integer>
 </dict>
 </plist>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>extension_UIColor_swift</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>All</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>extension UIColor {
+
+    convenience init(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat) {
+        self.init(red: r/255.0, green: g/255.0, blue: b/255.0, alpha: 1.0)
+    }
+
+    /// Init a color with a Hex number
+    ///
+    /// - Parameter hex: Hex number
+    convenience init(_ hex: Int) {
+        self.init(hex: hex, alpha: 1.0)
+    }
+
+    convenience init(hex: Int, alpha: CGFloat) {
+        self.init(
+            red:   (CGFloat((hex &amp; 0xff0000) &gt;&gt; 16)) / 255.0,
+            green: (CGFloat((hex &amp; 0xff00) &gt;&gt; 8)) / 255.0,
+            blue:  (CGFloat(hex &amp; 0xff) / 255.0),
+            alpha: alpha)
+    }
+
+    convenience init(hexFromString:String, alpha:CGFloat = 1.0) {
+        var cString:String = hexFromString.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        var rgbValue:UInt32 = 10066329 //color #999999 if string has wrong format
+
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
+        }
+        if ((cString.count) == 6) {
+            Scanner(string: cString).scanHexInt32(&amp;rgbValue)
+        }
+        self.init(
+            red: CGFloat((rgbValue &amp; 0xFF0000) &gt;&gt; 16) / 255.0,
+            green: CGFloat((rgbValue &amp; 0x00FF00) &gt;&gt; 8) / 255.0,
+            blue: CGFloat(rgbValue &amp; 0x0000FF) / 255.0,
+            alpha: alpha
+        )
+    }
+
+    // create a random color for debug
+    static func randomColor() -&gt; UIColor {
+        return UIColor(CGFloat(arc4random_uniform(255)), CGFloat(arc4random_uniform(255))
+            ,CGFloat(arc4random_uniform(255)))
+    }
+
+    var image: UIImage? {
+        get {
+            let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+            UIGraphicsBeginImageContext(rect.size)
+            let context = UIGraphicsGetCurrentContext()
+            context?.setFillColor(cgColor)
+            context?.fill(rect)
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return image
+        }
+    }
+
+    /// 获取当前颜色的透明度
+    var alphaComponent: CGFloat {
+        var alpha: CGFloat = 0.0
+        getRed(nil, green: nil, blue: nil, alpha: &amp;alpha)
+        return alpha
+    }
+}</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>7C0317CF-2050-4DC0-B50D-5C54A3A31B60</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Swift</string>
+	<key>IDECodeSnippetSummary</key>
+	<string></string>
+	<key>IDECodeSnippetTitle</key>
+	<string>extension UIColor - swift</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>0</integer>
+</dict>
+</plist>

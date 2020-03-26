@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>DIYSliderView_Snippet</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>All</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>import Foundation
+
+class MCActionSliderView: UIView {
+
+    let titleLable = UILabel()
+    let miniLable = MissionLable()
+    let maxLable = MissionLable()
+    let slider = UISlider()
+    let valueLable = MissionLable()
+    var indicateView = AngleIndicateView(viewType: .arc, config: AngleIndicateViewConfig.init())
+
+    var format = ""
+    var minValue: Float = 0
+    var maxValue: Float = 0
+    var currentValue: Float = 0
+    var curValueAndTextHandler: SetMissionTupleHandler?
+    var newValueDidSetHandler: SetNewValueHandler?
+    var newValueFinishSetHandler: SetNewValueHandler?
+    var curValueAndTextFinishHandler: SetMissionTupleHandler?
+    var unit = "s"
+    var unitType: MCUnitType = .other
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUI()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setUI()
+    }
+
+    func setUI() {
+        clipsToBounds = true
+        backgroundColor = UIColor.clear
+
+        addSubview(titleLable)
+        titleLable.textColor = UIColor.white
+        titleLable.font = UIFont.font(ofType: ATFontCN.regular, ofSize: 14)
+        titleLable.snp.makeConstraints { (maker) in
+            maker.centerY.equalToSuperview()
+            maker.left.equalToSuperview().offset(12)
+            maker.width.equalTo(150)
+        }
+        
+        addSubview(valueLable)
+        valueLable.textAlignment = .right
+        valueLable.font = UIFont.font(ofType: ATFontCN.regular, ofSize: 14)
+        valueLable.snp.makeConstraints { (maker) in
+            maker.centerY.equalToSuperview()
+            maker.left.equalTo(titleLable.snp.right)
+            maker.width.equalTo(50)
+        }
+        
+        addSubview(indicateView)
+        indicateView.snp.makeConstraints { (maker) in
+            maker.centerY.equalToSuperview()
+            maker.right.equalTo(valueLable.snp.left)
+            maker.width.height.equalTo(16)
+        }
+        indicateView.isHidden = true
+
+        addSubview(miniLable)
+        miniLable.textColor = UIColor.init(hexFromString: "FFFFFF", alpha: 0.5)
+        miniLable.font = UIFont.font(ofType: ATFontCN.regular, ofSize: 14)
+        miniLable.snp.makeConstraints { (maker) in
+            maker.centerY.equalToSuperview()
+            maker.left.equalTo(valueLable.snp.right)
+            maker.width.equalTo(30)
+        }
+        addSubview(maxLable)
+        maxLable.textColor = UIColor.init(hexFromString: "FFFFFF", alpha: 0.5)
+        maxLable.font = UIFont.font(ofType: ATFontCN.regular, ofSize: 14)
+        maxLable.snp.makeConstraints { (maker) in
+            maker.centerY.equalToSuperview()
+            maker.right.equalToSuperview()
+            maker.width.equalTo(50)
+        }
+        slider.setThumbImage(UIImage(named: "blue_slider"), for: .normal)
+        slider.minimumTrackTintColor = SettingsBlue
+        slider.maximumTrackTintColor = SettingsSliderGray
+        slider.addTarget(self, action: #selector(sliderTouchExit(_:)), for: .touchUpOutside)
+        slider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
+        addSubview(slider)
+        slider.snp.makeConstraints { (maker) in
+            maker.centerY.equalToSuperview()
+            maker.left.equalTo(miniLable.snp.right)
+            maker.right.equalTo(maxLable.snp.left)
+        }
+
+        setData()
+    }
+
+    deinit {
+        printLog("\(self.classIdentifier) deinit")
+    }
+
+
+    /// 加载数据
+    ///
+    /// - Parameter item: 数据模型
+    func load(index: Int) -&gt; Void {
+        valueLable.text = String(index)
+    }
+
+    func setData(_ curValue: String = "N/A", with missionSliderType: MissionSliderType = .photoTiming) {
+        if let format = missionSliderType.dic["format"] {
+            self.format = format
+        } else {
+            self.format = ""
+        }
+
+        if let unit = missionSliderType.dic["unit"] {
+            self.unit = unit
+            if unit == "m" {
+                unitType = .lenght
+            } else if unit == "m/s" {
+                unitType = .speed
+            } else {
+                unitType = .other
+            }
+        } else {
+            self.unit = ""
+            unitType = .other
+        }
+
+        if let minValue = missionSliderType.dic["minValue"] {
+            slider.minimumValue = Float(minValue)!
+            self.minValue = roundf(slider.minimumValue)
+            miniLable.text = minValue.deal(with: unitType)
+        }
+
+        if let maxValue = missionSliderType.dic["maxValue"] {
+            slider.maximumValue = Float(maxValue)!
+            self.maxValue = roundf(slider.maximumValue)
+            maxLable.text = maxValue.deal(with: unitType)
+        }
+
+        if let title = missionSliderType.dic["title"] {
+            titleLable.text = title
+        } else {
+            titleLable.text = ""
+        }
+
+        if curValue != "N/A" {
+            if let curValueFloat = Float(curValue) {
+                slider.value = curValueFloat
+            }
+        } else {
+            slider.value = slider.minimumValue
+        }
+        currentValue = slider.value
+        valueLable.text = showTextByUnitSystem(value: slider.value, format: format, unitType: unitType, unit: unit)
+        
+        if missionSliderType == .gimbalPitchAngle {
+            indicateView.isHidden = false
+            indicateView.updateLineAngle(angle: CGFloat(slider.value))
+        } else if missionSliderType == .mainRouteAngle {
+            var config = AngleIndicateViewConfig.init()
+            config.radius = 8.0
+            indicateView = AngleIndicateView.init(viewType: .circle, config: config)
+            indicateView.isHidden = false
+            addSubview(indicateView)
+            indicateView.snp.makeConstraints { (maker) in
+                maker.centerY.equalToSuperview()
+                maker.right.equalTo(valueLable.snp.left)
+                maker.width.height.equalTo(16)
+            }
+            indicateView.updateLineAngle(angle: CGFloat(slider.value))
+        }
+    }
+
+    func update(curValue: String = "", maxValue: String = "") {
+        if maxValue != "" {
+            slider.maximumValue = Float(maxValue)!
+            self.maxValue = roundf(slider.maximumValue)
+            maxLable.text = maxValue.deal(with: unitType)
+            if self.maxValue &lt; slider.value {
+                slider.value = self.maxValue
+                currentValue = self.maxValue
+                valueLable.text = showTextByUnitSystem(value: slider.value, format: format, unitType: unitType, unit: unit)
+            }
+        }
+        if curValue != "" {
+            if curValue != "N/A" {
+                if let curValueFloat = Float(curValue) {
+                    slider.value = curValueFloat
+                }
+            } else {
+                slider.value = slider.minimumValue
+            }
+            currentValue = slider.value
+            valueLable.text = showTextByUnitSystem(value: slider.value, format: format, unitType: unitType, unit: unit)
+        }
+    }
+
+    //MARK: - Slider events
+    @objc func sliderValueChanged(_ sender: UISlider) {
+        currentValue = roundf(slider.value)
+        valueLable.text = showTextByUnitSystem(value: slider.value, format: format, unitType: unitType, unit: unit)
+        newValueDidSetHandler?(slider.value)
+        curValueAndTextHandler?((String(roundf(slider.value).format(format: ".0")), valueLable.text!))
+        indicateView.updateLineAngle(angle: CGFloat(slider.value))
+    }
+
+    @objc func sliderTouchExit(_ sender: UISlider) {
+        newValueFinishSetHandler?(slider.value)
+        curValueAndTextFinishHandler?((String(roundf(slider.value).format(format: ".0")), valueLable.text!))
+    }
+
+
+}</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>5AD22208-D888-4920-80A9-8FEC1559BB86</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Swift</string>
+	<key>IDECodeSnippetSummary</key>
+	<string></string>
+	<key>IDECodeSnippetTitle</key>
+	<string>DIYSliderView Snippet</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>0</integer>
+</dict>
+</plist>
