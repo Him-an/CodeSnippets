@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDECodeSnippetCompletionPrefix</key>
+	<string>runtime_swizzleMethods_viewDidAppear</string>
+	<key>IDECodeSnippetCompletionScopes</key>
+	<array>
+		<string>All</string>
+	</array>
+	<key>IDECodeSnippetContents</key>
+	<string>#import &lt;objc/runtime.h&gt;
+ 
+@implementation UIViewController (swizzling)
+ 
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        SEL origSel = @selector(viewDidAppear:);
+        SEL swizSel = @selector(swiz_viewDidAppear:);
+        [UIViewController swizzleMethods:[self class] originalSelector:origSel swizzledSelector:swizSel];
+    });
+}
+ 
+//exchange implementation of two methods
++ (void)swizzleMethods:(Class)class originalSelector:(SEL)origSel swizzledSelector:(SEL)swizSel
+{
+    Method origMethod = class_getInstanceMethod(class, origSel);
+    Method swizMethod = class_getInstanceMethod(class, swizSel);
+     
+    //class_addMethod will fail if original method already exists
+    BOOL didAddMethod = class_addMethod(class, origSel, method_getImplementation(swizMethod), method_getTypeEncoding(swizMethod));
+    if (didAddMethod) {
+        class_replaceMethod(class, swizSel, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
+    } else {
+        //origMethod and swizMethod already exist
+        method_exchangeImplementations(origMethod, swizMethod);
+    }
+}
+ 
+- (void)swiz_viewDidAppear:(BOOL)animated
+{
+    NSLog(@"I am in - [swiz_viewDidAppear:]");
+    //需要注入的代码写在此处
+    [self swiz_viewDidAppear:animated];
+}
+ 
+@end</string>
+	<key>IDECodeSnippetIdentifier</key>
+	<string>D6C5D9FE-28A2-4E27-8147-65D107B2606E</string>
+	<key>IDECodeSnippetLanguage</key>
+	<string>Xcode.SourceCodeLanguage.Objective-C</string>
+	<key>IDECodeSnippetSummary</key>
+	<string></string>
+	<key>IDECodeSnippetTitle</key>
+	<string>swizzleMethods Snippet</string>
+	<key>IDECodeSnippetUserSnippet</key>
+	<true/>
+	<key>IDECodeSnippetVersion</key>
+	<integer>0</integer>
+</dict>
+</plist>

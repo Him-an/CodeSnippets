@@ -3,38 +3,26 @@
 <plist version="1.0">
 <dict>
 	<key>IDECodeSnippetCompletionPrefix</key>
-	<string>extension_NSObject_swift</string>
+	<string>GCD_after</string>
 	<key>IDECodeSnippetCompletionScopes</key>
 	<array>
 		<string>All</string>
 	</array>
 	<key>IDECodeSnippetContents</key>
-	<string>import Foundation
-
-extension NSObject {
-    static var identifier: String {
-        get {
-            return String(describing: self)
-        }
-    }
-    
-    var classIdentifier: String {
-        get {
-            return String(describing: type(of: self))
-        }
-    }
-}</string>
+	<string>dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(&lt;#delayInSeconds#&gt; * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        &lt;#code to be executed after a specified delay#&gt;
+    });</string>
 	<key>IDECodeSnippetIdentifier</key>
-	<string>B4571C45-D21F-43BB-A6D0-64C0E1B22000</string>
+	<string>8C568869-C413-4F46-BE91-A87CF17BF788</string>
 	<key>IDECodeSnippetLanguage</key>
-	<string>Xcode.SourceCodeLanguage.Swift</string>
+	<string>Xcode.SourceCodeLanguage.Objective-C</string>
 	<key>IDECodeSnippetSummary</key>
 	<string></string>
 	<key>IDECodeSnippetTitle</key>
-	<string>extension NSObject - swift</string>
+	<string>GCD: dispatch_after</string>
 	<key>IDECodeSnippetUserSnippet</key>
 	<true/>
 	<key>IDECodeSnippetVersion</key>
-	<integer>2</integer>
+	<integer>0</integer>
 </dict>
 </plist>
